@@ -1,5 +1,8 @@
-Adding Fourier component for perturbation analysis
+Adding Fourier component for perturbation analysis (WIP)
 =======
 # Fourier Implementation for Nek
-with Slip velocity across elements.
-Added modifications for documentation
+Including w-component solver for ifaxis. 
+Including Global Mapping for mesh motion.
+Interpolation for Single Global Interface Element.
+
+Added modifications for documentation.
