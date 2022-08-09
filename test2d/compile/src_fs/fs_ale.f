@@ -60,7 +60,8 @@
       call copy3(xm0_fs,ym0_fs,zm0_fs,xm1,ym1,zm1,n)
 
 !     Create Global numbering and GS handle
-      call fs_map()
+!      call fs_map()
+      call fs_map1()
 
       call rzero(fs_mask,n)
 

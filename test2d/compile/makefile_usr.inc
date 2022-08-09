@@ -31,9 +31,10 @@ $(OBJDIR)/arn_arp_io.o          :$(SRC_ARN)/arn_arp_io.f;               $(F77) -
 $(OBJDIR)/chkpoint.o            :$(SRC_CHP)/chkpoint.f;                 $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 $(OBJDIR)/chkpt_mstp.o          :$(SRC_CHP)/chkpt_mstp.f;               $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 $(OBJDIR)/arn_cmath.o           :$(SRC_ARN)/arn_cmath.f;                $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
-$(OBJDIR)/fs_ale.o              :$(SRC_FS)/fs_ale.f;                   $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
-$(OBJDIR)/fs_global_surf.o      :$(SRC_FS)/fs_global_surf.f;           $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
-$(OBJDIR)/frame_fs.o            :$(SRC_FS)/frame_fs.f;                 $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
+$(OBJDIR)/fs_ale.o              :$(SRC_FS)/fs_ale.f;                    $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
+$(OBJDIR)/fs_sort.o             :$(SRC_FS)/fs_sort.f;                   $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
+$(OBJDIR)/fs_global_surf.o      :$(SRC_FS)/fs_global_surf.f;            $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
+$(OBJDIR)/frame_fs.o            :$(SRC_FS)/frame_fs.f;                  $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 $(OBJDIR)/localfilter.o         :$(SRC_USR)/localfilter.f;              $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 
 
