@@ -17,6 +17,8 @@
 
       real fs_damp(lx1,ly1,lz1,lelv)            ! Damping function
       real fs_ofst                              ! offset before damping
+      real fs_spm_stiff                         ! Spring-Mass-Damper: Stiffness
+      real fs_spm_damp                          ! Spring-Mass-Damper: Damping
 
       character*3 fs_cbc(6,lelv)                ! mark the interface
 
@@ -25,10 +27,10 @@
       integer fs_elno(lelv)                     ! El no of free surface
       integer fs_iface(lelv)                    ! face number of free surface
 
-      integer fs_ie(lelt*lx1)                    ! El. No. of SYM & O
-      integer fs_ix(lelt*lx1)                    ! ix No. of SYM & O
-      integer fs_iy(lelt*lx1)                    ! iy No. of SYM & O
-      integer fs_iz(lelt*lx1)                    ! iz No. of SYM & O
+      integer fs_ie(lelt*lx1)                   ! El. No. of SYM & O
+      integer fs_ix(lelt*lx1)                   ! ix No. of SYM & O
+      integer fs_iy(lelt*lx1)                   ! iy No. of SYM & O
+      integer fs_iz(lelt*lx1)                   ! iz No. of SYM & O
 
       common /fs_gsh/ fs_gs_handle
 
@@ -36,7 +38,7 @@
       common /fs_iv/  fs_elno, fs_iface, fs_ie, fs_ix, fs_iy, fs_iz
       common /fs_iv8/ fs_gl_num
       common /fs_rv/  fs_vmult, fs_mask, fs_crmask, fs_damp
-      common /fs_rs/  fs_ofst 
+      common /fs_rs/  fs_ofst,fs_spm_stiff,fs_spm_damp
 
       common /fs_cv/  fs_cbc
 
@@ -139,7 +141,9 @@
       integer fs_tmr_tot_id        ! total time id
       integer fs_tmr_ini_id        ! initialisation time id
       integer fs_ofst_id           ! offset id
-    
+      integer fs_spm_stiff_id      ! Spring-Mass-Damper: stiffness id
+      integer fs_spm_damp_id       ! Spring-Mass-Damper: Damping id
+   
       integer fs_iffs_id           ! If Free Surface id
       integer fs_ifgsm_id          ! If Global Smoothening id
       integer fs_iftc_id           ! If Tangential Correction id
@@ -151,7 +155,8 @@
       integer fs_log               ! Log Level
 
       common /fs_frame_id/ fs_id, fs_sec_id, fs_tmr_tot_id,
-     $                     fs_tmr_ini_id, fs_ofst_id, fs_iffs_id, 
+     $                     fs_tmr_ini_id, fs_ofst_id, fs_spm_stiff_id,
+     $                     fs_spm_damp_id, fs_iffs_id, 
      $                     fs_ifgsm_id, fs_iftc_id, fs_ifgh_id,
      $                     fs_iffil_id, fs_ifgrid_id, fs_log_id
 

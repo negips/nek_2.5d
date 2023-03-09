@@ -96,6 +96,16 @@
      $     'Damping Offset ',
      $     rpar_real,0,0.0,.false.,'  ')
 
+!     FS_STIFF
+      call rprm_rp_reg(fs_spm_stiff_id,fs_sec_id,'FS_SPM_STIFF',
+     $     'Spring-Mass-Damper: Stiffness ',
+     $     rpar_real,0,0.0,.false.,'  ')
+
+!     FS_DAMP
+      call rprm_rp_reg(fs_spm_damp_id,fs_sec_id,'FS_SPM_DAMP',
+     $     'Spring-Mass-Damper: Damping ',
+     $     rpar_real,0,0.0,.false.,'  ')
+
 !     FS_LOG
       call rprm_rp_reg(fs_log_id,fs_sec_id,'FS_LOG',
      $     'Log Level ',
@@ -141,6 +151,12 @@
 !     fs_ofst
       call rprm_rp_get(itmp,rtmp,ltmp,ctmp,fs_ofst_id,rpar_real)
       fs_ofst = rtmp
+!     fs_spm_stiff
+      call rprm_rp_get(itmp,rtmp,ltmp,ctmp,fs_spm_stiff_id,rpar_real)
+      fs_spm_stiff = rtmp
+!     fs_spm_damp
+      call rprm_rp_get(itmp,rtmp,ltmp,ctmp,fs_spm_damp_id,rpar_real)
+      fs_spm_damp = rtmp
 !     ifgsm
       call rprm_rp_get(itmp,rtmp,ltmp,ctmp,fs_ifgsm_id,rpar_log)
       fs_ifgsm = ltmp

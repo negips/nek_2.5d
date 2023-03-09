@@ -32,14 +32,8 @@
      $ ,             wki (lt)
 
       real tb1,tb2
-      integer ninseg1,ninseg2
-      logical ifseg1,ifseg2
-      common /scruz/ tb1     (lt)
+      common /scrch/ tb1     (lt)
      $ ,             tb2     (lt)
-     $ ,             ninseg1 (lt)
-     $ ,             ninseg2 (lt)
-     $ ,             ifseg1  (lt)
-     $ ,             ifseg2  (lt)
 
       real radius(lt)
 
@@ -109,7 +103,6 @@
 !     Gather-Scatter Setup      
       call fs_setupds(fs_gs_handle,ntot1,fs_gl_num)
 
-
       return
       end subroutine fs_map1
 !---------------------------------------------------------------------- 
@@ -149,15 +142,21 @@
      $      gl_n,', Arr. Len=', alen
         call mntr_log(fs_id,fs_log,str)
         
-        call fs_global_sort_sp(fld1,fld2,gnum,n)
+!        call fs_global_sort_sp(fld1,fld2,gnum,n)
+        call fs_global_sort_mp(fld1,fld2,gnum,n)
+       
         return
       else
+        
         call blank(str,64)
         write(str,'(A27,I5,A11,I6)') 'Multiple Processor Sort: N=',
      $      gl_n,', Arr. Len=', alen
         call mntr_log(fs_id,fs_log,str)
-        call mntr_log(fs_id,fs_log,'Not Yet implemented. Exitting')
-        call exitt
+
+        call fs_global_sort_mp(fld1,fld2,gnum,n)
+
+!        call mntr_log(fs_id,fs_log,'Not Yet implemented. Exitting')
+!        call exitt
       endif
 
 
@@ -166,6 +165,7 @@
 !---------------------------------------------------------------------- 
       subroutine fs_global_sort_sp(fld1,fld2,gnum,n)
 
+!     sp - Single Processor        
 !     Get global numbering of entries
 !     When the Single processor work memory is large enough
 !     for all entries.
@@ -250,7 +250,6 @@
 !     wki    - integer work array
       call fs_local_tuple_sort(wk1,wk2,ind,ifseg,nseg,
      $                         ninseg,gl_n,ndim,wk3,wki)
-
 
 !     Contract array to get Globally unique points
 !     using wki as global numbering array (temporary)
@@ -362,10 +361,12 @@
 
           do i=2,n
             if (j.eq.1) then
+!             Sort by primary field value              
               if ((abs(fld1(i)-fld1(i-1)).gt.tol)) then
                 ifseg(i) = .true.
               endif  
             elseif (j.eq.2) then
+!             Sort by secondary field value              
               if ((abs(fld2(i)-fld2(i-1)).gt.tol)) then
                 ifseg(i) = .true.
               endif    

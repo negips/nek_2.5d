@@ -21,7 +21,7 @@ variableDt = no
 targetCFL = 5.0
 
 writeControl = TimeStep
-writeInterval = 100
+writeInterval = 10
 
 userParam01 = 0.01    # Perturbation amplitude
 userParam02 = 0.0      # local filter weight 
