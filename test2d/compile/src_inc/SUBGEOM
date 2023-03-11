@@ -1,0 +1,149 @@
+!
+!     Gauss-Labotto and Gauss points
+!
+
+      integer lx9,ly9,lz9
+      parameter (lx9 = 4)
+      parameter (ly9 = lx9)
+      parameter (lz9 = max(1,(ldim-2)*lx9))
+
+!     Nodes
+      real zgm9(lx9,3)
+      common /gauss9/ zgm9
+
+!     Weights
+      real wxm9(lx9), wym9(ly9), wzm9(lz9), w3m9(lx9,ly9,lz9)
+      common /wxyz9/ wxm9,wym9,wzm9,w3m9
+
+!     BaryWeights
+      real bwxm1(lx1), bwym1(ly1), bwzm1(lz1)
+      real bwxm2(lx2), bwym2(ly2), bwzm2(lz2)
+      real bwxm9(lx9), bwym9(ly9), bwzm9(lz9)
+      common /bwgts9/ bwxm1,bwym1,bwzm1
+     $               ,bwxm2,bwym2,bwzm2
+     $               ,bwxm9,bwym9,bwzm9
+
+!---------------------------------------------------------------------- 
+!     Interpolation operators
+
+!     M9 -> M1              !M9 -> M2       
+      real ixm91 (lx1,lx9),  ixm92 (lx2,lx9)
+     $    ,iym91 (ly1,ly9),  iym92 (ly2,ly9)
+     $    ,izm91 (lz1,lz9),  izm92 (lz2,lz9)
+
+!     M9 -> M1 (Transposed) !M9 -> M2 (Transposed)
+      real ixtm91(lx9,lx1),  ixtm92(lx9,lx2)
+     $    ,iytm91(ly9,ly1),  iytm92(ly9,ly2)
+     $    ,iztm91(lz9,lz1),  iztm92(lz9,lz2)
+
+!     M1 -> M9              !M2 -> M9
+      real ixm19 (lx9,lx1),  ixm29 (lx2,lx9)
+     $    ,iym19 (ly9,ly1),  iym29 (ly2,ly9)
+     $    ,izm19 (lz9,lz1),  izm29 (lz2,lz9)
+
+!     M1 -> M9 (Transposed) !M2 -> M9 (Transposed)
+      real ixtm19(lx1,lx9),  ixtm29(lx9,lx2)
+     $    ,iytm19(ly1,ly9),  iytm29(ly9,ly2)
+     $    ,iztm19(lz1,lz9),  iztm29(lz9,lz2)
+
+      common /ixyz9/  ixm91,  iym91,  izm91
+     $              , ixtm91, iytm91, iztm91      
+     $              , ixm19,  iym19,  izm19
+     $              , ixtm19, iytm19, iztm19
+     $              , ixm92,  iym92,  izm92
+     $              , ixtm92, iytm92, iztm92
+     $              , ixm29,  iym29,  izm29
+     $              , ixtm29, iytm29, iztm29
+
+!---------------------------------------------------------------------- 
+!     Elemental derivative operators
+
+!     Derivative operators on M9      
+      real dxm9 (lx9,lx9),  dxtm9 (lx9,lx9)
+     $    ,dym9 (ly9,ly9),  dytm9 (ly9,ly9)
+     $    ,dzm9 (lz9,lz9),  dztm9 (lz9,lz9)
+
+!     M9 -> M1              !M9 -> M2       
+      real dxm91 (lx1,lx9),  dxm92 (lx2,lx9)
+     $    ,dym91 (ly1,ly9),  dym92 (ly2,ly9)
+     $    ,dzm91 (lz1,lz9),  dzm92 (lz2,lz9)
+
+!     M9 -> M1 (Transposed) !M9 -> M2 (Transposed)
+      real dxtm91(lx9,lx1),  dxtm92(lx9,lx2)
+     $    ,dytm91(ly9,ly1),  dytm92(ly9,ly2)
+     $    ,dztm91(lz9,lz1),  dztm92(lz9,lz2)
+
+!     M1 -> M9              !M2 -> M9
+      real dxm19 (lx9,lx1),  dxm29 (lx2,lx9)
+     $    ,dym19 (ly9,ly1),  dym29 (ly2,ly9)
+     $    ,dzm19 (lz9,lz1),  dzm29 (lz2,lz9)
+
+!     M1 -> M9 (Transposed) !M2 -> M9 (Transposed)
+      real dxtm19(lx1,lx9),  dxtm29(lx9,lx2)
+     $    ,dytm19(ly1,ly9),  dytm29(ly9,ly2)
+     $    ,dztm19(lz1,lz9),  dztm29(lz9,lz2)
+
+      common /dxyz9/  dxm9,   dym9,   dzm9
+     $              , dxtm9,  dytm9,  dztm9
+     $              , dxm91,  dym91,  dzm91
+     $              , dxtm91, dytm91, dztm91      
+     $              , dxm19,  dym19,  dzm19
+     $              , dxtm19, dytm19, dztm19
+     $              , dxm92,  dym92,  dzm92
+     $              , dxtm92, dytm92, dztm92
+     $              , dxm29,  dym29,  dzm29
+     $              , dxtm29, dytm29, dztm29
+
+!---------------------------------------------------------------------- 
+
+      real xm9(lx9,ly9,lz9,lelt)
+      real ym9(lx9,ly9,lz9,lelt)
+      real zm9(lx9,ly9,lz9,lelt)
+      real vmult9(lx9,ly9,lz9,lelt) ! Inverse multiplicity
+
+      common /gxyz9/ xm9,ym9,zm9,vmult9
+
+      real rxm9(lx9,ly9,lz9,lelt)
+     $    ,sxm9(lx9,ly9,lz9,lelt)
+     $    ,txm9(lx9,ly9,lz9,lelt)
+     $    ,rym9(lx9,ly9,lz9,lelt)
+     $    ,sym9(lx9,ly9,lz9,lelt)
+     $    ,tym9(lx9,ly9,lz9,lelt)
+     $    ,rzm9(lx9,ly9,lz9,lelt)
+     $    ,szm9(lx9,ly9,lz9,lelt)
+     $    ,tzm9(lx9,ly9,lz9,lelt)
+     $    ,jacm9(lx9,ly9,lz9,lelt)
+     $    ,jacmi9(lx9*ly9*lz9,lelt)
+      common /giso19/ rxm9,sxm9,txm9,rym9,sym9,tym9,rzm9,szm9,tzm9
+     $              , jacm9,jacmi9
+
+
+!     Mesh velocities 
+      real wx9(lx9,ly9,lz9,lelt)
+     $   , wy9(lx9,ly9,lz9,lelt)
+     $   , wz9(lx9,ly9,lz9,lelt)
+      common /wsol9/ wx9,wy9,wz9
+
+      real wxlag9(lx9,ly9,lz9,lelt,lorder-1)
+     $   , wylag9(lx9,ly9,lz9,lelt,lorder-1)
+     $   , wzlag9(lx9,ly9,lz9,lelt,lorder-1)
+      common /wlag9/ wxlag9,wylag9,wzlag9
+
+!---------------------------------------------------------------------- 
+
+      integer subgeom_gs_handle
+      common /subgeom_gsh/ subgeom_gs_handle
+
+
+
+
+
+
+
+
+
+
+
+
+
+

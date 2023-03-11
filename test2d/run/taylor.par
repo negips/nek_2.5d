@@ -91,16 +91,16 @@ fs_log            = 4
 
 [_TSTEPPER]             # Runtime parameter section for time stepper module
 MODE              = DIR                    # Simulation mode
-STEPS             = 250                   # Length of stepper phase
-MAXCYC            = 2000                    # Max number of stepper cycles
+STEPS             = 250                    # Length of stepper phase
+MAXCYC            = 2000                   # Max number of stepper cycles
 TOL               = 1.00000000E-06         # Convergence threshold
 IFTST             = no                     # If enable?
 #
 [_ARN_ARP]              # Runtime parameter section for Arnoldi ARPACK module
-NKRL              = 30                    # Krylov space size
+NKRL              = 30                     # Krylov space size
 NEGV              = 10                     # Number of eigenvalues
 IFPR              = yes                    # If pressure in arnoldi vector
-IFCOMPLEX         = yes                    # Use complex arithmetic (znaupd)
+IFCOMPLEX         = no                     # Use complex arithmetic (znaupd)
 
 
 

@@ -1058,6 +1058,8 @@
         enddo
       enddo
 
+!      call fs_global_deriv()
+
 !     Get the surface x,y,z
       nfaces = 2*ndim
       ne     = 0              ! total number of interface elements

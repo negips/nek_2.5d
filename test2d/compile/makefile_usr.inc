@@ -39,5 +39,8 @@ $(OBJDIR)/fs_global_surf.o      :$(SRC_FS)/fs_global_surf.f;            $(F77) -
 $(OBJDIR)/frame_fs.o            :$(SRC_FS)/frame_fs.f;                  $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 $(OBJDIR)/localfilter.o         :$(SRC_USR)/localfilter.f;              $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 
+$(OBJDIR)/generic_subs.o        :$(SRC_USR)/generic_subs.f;             $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
+$(OBJDIR)/kopriva.o             :$(SRC_USR)/kopriva.f;                  $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
+$(OBJDIR)/subparametric_geom.o  :$(SRC_USR)/subparametric_geom.f;       $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 
 

@@ -37,7 +37,7 @@ F3D="solve_f3d.o solvep_f3d.o weak_lapl_cyl.o solver_f3d.o frame_f3d.o"         
 FSF="fs_ale.o fs_sort.o fs_sort_mp.o fs_global_surf.o frame_fs.o localfilter.o"        # Free Surface Motion
 ARN="arn_arp.o arn_arp_io.o arn_cmath.o tstepper.o conht_tools.o"                      # Arnoldi
 CHKP="chkpoint.o chkpt_mstp.o"                                                         # Checkpointing
-USR+="$FRM $F3D $FSF $ARN $CHKP"
+USR+="$FRM $F3D $FSF $CHKP generic_subs.o kopriva.o subparametric_geom.o"
 
 # MPI (default 1) 
 #MPI=0

@@ -73,35 +73,35 @@
       parameter (wedima = 3*arna_lkrl)
       parameter (wrdima = arna_lkrl)
 
-!     arrays
-!     Complex case declaration      
-      complex*16 workda(wddima)                 ! Main Arnoldi array for
-                                                ! reverse communication
-      complex*16 workla(wldima)                 ! Private work array 
-                                                ! for arpack
-      complex*16 workea(wedima)                 ! Private work array     
-                                                ! for arpack
-      complex*16 vbasea(arna_ls,arna_lkrl)      ! Krylov Vectors
-      complex*16 resida(arna_ls)                ! Residual vector
-      complex*16 driarp(arna_lkrl,2)            ! Ritz/Eigen values
-      real       workra(wrdima)                 ! Private work array for
-                                                ! arpack (Complex case only)
-      complex*16 sigarp(1)                      ! Complex Shift
-
-!!     Real Case declaration      
-!      real workda(wddima)                       ! Main Arnoldi array for
+!!     arrays
+!!     Complex case declaration      
+!      complex*16 workda(wddima)                 ! Main Arnoldi array for
 !                                                ! reverse communication
-!      real workla(wldima)                       ! Private work array 
+!      complex*16 workla(wldima)                 ! Private work array 
 !                                                ! for arpack
-!      real workea(wedima)                       ! private work array 
+!      complex*16 workea(wedima)                 ! Private work array     
 !                                                ! for arpack
-!      real vbasea(arna_ls,arna_lkrl)            ! Krylov Vectors
-!      real resida(arna_ls)                      ! Residual vector
-!      real driarp(arna_lkrl,4)                  ! Ritz/Eigen values
+!      complex*16 vbasea(arna_ls,arna_lkrl)      ! Krylov Vectors
+!      complex*16 resida(arna_ls)                ! Residual vector
+!      complex*16 driarp(arna_lkrl,2)            ! Ritz/Eigen values
 !      real       workra(wrdima)                 ! Private work array for
 !                                                ! arpack (Complex case only)
-!      real sigarp(2)                            ! Real and Imag
-!                                                ! parts of the shift
+!      complex*16 sigarp(1)                      ! Complex Shift
+
+!     Real Case declaration      
+      real workda(wddima)                       ! Main Arnoldi array for
+                                                ! reverse communication
+      real workla(wldima)                       ! Private work array 
+                                                ! for arpack
+      real workea(wedima)                       ! private work array 
+                                                ! for arpack
+      real vbasea(arna_ls,arna_lkrl)            ! Krylov Vectors
+      real resida(arna_ls)                      ! Residual vector
+      real driarp(arna_lkrl,4)                  ! Ritz/Eigen values
+      real       workra(wrdima)                 ! Private work array for
+                                                ! arpack (Complex case only)
+      real sigarp(2)                            ! Real and Imag
+                                                ! parts of the shift
 
 
 !     integer parameters

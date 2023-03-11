@@ -112,7 +112,7 @@ c-----------------------------------------------------------------------
         call copy(t,vz,ntot1)
       endif  
 
-!      call test_random
+      call test_random
 
       if (fs_iffs) call fs_mvmesh()
 !      call rzero3(wx,wy,wz,ntot1)
@@ -396,51 +396,6 @@ c-----------------------------------------------------------------------
       end
 c-----------------------------------------------------------------------
 !=======================================================================
-!> @brief Register user specified modules
-      subroutine frame_usr_register
-      implicit none
-
-      include 'SIZE'
-      include 'FRAMELP'
-
-!     register modules
-      call io_register
-      call chkpt_register
-      call frame_register_f3d
-      call frame_register_fs
-      call tst_register
-
-      return
-      end subroutine
-!======================================================================
-!> @brief Initialise user specified modules
-      subroutine frame_usr_init
-      implicit none
-
-      include 'SIZE'
-      include 'FRAMELP'
-
-!     initialise modules
-      call chkpt_init
-      call frame_get_param_f3d
-      call frame_get_param_fs
-      call tst_init
-
-      return
-      end subroutine
-!======================================================================
-!> @brief Finalise user specified modules
-      subroutine frame_usr_end
-      implicit none
-
-      include 'SIZE'
-      include 'FRAMELP'
-
-      
-      return
-      end subroutine
-
-!-----------------------------------------------------------------------
 
       subroutine check_vbasea
 
@@ -503,152 +458,85 @@ c-----------------------------------------------------------------------
       include 'MVGEOM'
 
       include 'FS_ALE'
+      include 'SUBGEOM'
 
       integer ntot1,ntot2
-      integer i,j
-
-      integer igeom
-      character cb*3
-      integer ie,iface,nfaces
-
-      integer nface,nedge,ncrnr
-      integer ntotf,ntots,ntotc
+      integer e,i,j
 
       integer nxyz
-      integer nyz1,nxy2,nxyz1,nxyz2,n1,n2
+      integer nxyz9,ntot9
+
 
       real ta1,ta2,ta3
       common /scrns/ ta1 (lx1*ly1*lz1,lelv)
      $ ,             ta2 (lx1*ly1*lz1,lelv)
      $ ,             ta3 (lx1*ly1*lz1,lelv)
 
-      real           dx   (lx2*ly2*lz2,lelv)
-      real           dy   (lx2*ly2*lz2,lelv)
-      real           x    (lx1*ly1*lz1,lelv)
-      real           rm2  (lx2*ly2*lz2,lelv)
-      real           sm2  (lx2*ly2*lz2,lelv)
-      real           tm2  (lx2*ly2*lz2,lelv)
+      real x,y
+      integer idir
+      integer igeom
 
-      integer e,ifc,iop
-      real iegr,pidr
+      real om           ! angular frequency
+
 
       nxyz  = lx1*ly1*lz1
       ntot1 = nxyz*nelv
       ntot2 = lx2*ly2*lz2*nelv
 
+      nxyz9 = lx9*ly9*lz9
+      ntot9 = nxyz9*nelv
+
       if (istep.eq.0) then
 
-        call outpost(v1mask,v2mask,v3mask,pr,v3mask,'msk')
+        om = 1.0*pi
 
-        ifield = 1
-!        call rmask(vx,vy,vz,nelv)
-!        call outpost(vx,vy,vz,pr,t,'  ')
-
-!        if (nio.eq.0) write(6,*) 'NFIELD', nfield
-!        if (nio.eq.0) write(6,*) 'IFADVC', (ifadvc(i),i=1,nfield)
-
-        if (fs_iffs) then
-          ifstrs = .false.
-          call bcmask
-          ifstrs = .true.
-
-!         Forced to zero. 
-          nfaces = 2*ldim
-          nedge = 12
-          ncrnr = 2**ldim
-          ntotf = nface*nelv
-          ntots = nedge*nelv
-          ntotc = ncrnr*nelv
-       
-          iflmsf(1) = .false.
-          iflmse(1) = .false.
-          iflmsc(1) = .false.
-          call lfalse (ifmsfc(1,1,1),ntotf)
-          call lfalse (ifmseg(1,1,1),ntots)
-          call lfalse (ifmscr(1,1,1),ntotc)
-      
-          call copy(v3mask,v2mask,ntot1)      
-          call outpost(v1mask,v2mask,v3mask,pr,v3mask,'msk')
-
-          call fs_gen_damping
-
-        endif  
-
-        call col2(vx,v1mask,ntot1)
-        call col2(vy,v2mask,ntot1)
-        call col2(vz,v3mask,ntot1)
-        call outpost(vx,vy,vz,pr,vz,'   ')
-
-        call rzero(ta1,ntot1)
-        call rzero(ta2,ntot1)
-        call rzero(ta3,ntot1)
-        do i=1,nelv
-          iegr = lglel(i)+0.0
-          pidr = gllnid(lglel(i)) 
-          call cfill(ta1(1,i),iegr,nxyz)
-          call cfill(ta2(1,i),pidr,nxyz)
+        do i=1,ntot1
+          x = xm1(i,1,1,1)
+          y = ym1(i,1,1,1)
+          ym1(i,1,1,1) = ym1(i,1,1,1) + 0.1*cos(om*x) + 0.1*sin(om*y)
+          xm1(i,1,1,1) = xm1(i,1,1,1) + 0.05*sin(om*y) + 0.2*cos(om*x) 
         enddo
-        call outpost(ta1,ta2,ta3,pr,ta3,'eln') 
+        
+        igeom = 2
+        istep = 1
+        call gengeom(igeom)
 
-!       tangents/normals        
-        call rzero3(ta1,ta2,ta3,ntot1)
-        do i=1,fs_nel
-          e   = fs_elno(i)
-          ifc = fs_iface(i)
-          
-!         Get Normal directions      
-          call facexv(unx(1,1,ifc,e),uny(1,1,ifc,e),unz(1,1,ifc,e),
-     $                ta1(1,e),ta2(1,e),ta3(1,e),ifc,iop)
+        do i=1,ntot1
+          x = xm1(i,1,1,1)
+          vx(i,1,1,1) = sxm1(i,1,1,1)
         enddo
-!        call fs_int_project(ta1,ta2,ta3)
-        call outpost(ta1,ta2,ta3,pr,ta3,'tst')
 
-        call rzero3(ta1,ta2,ta3,ntot1)
-        do i=1,fs_nel
-          e   = fs_elno(i)
-          ifc = fs_iface(i)
-          
-!         Get Normal directions      
-          call facexv(t1x(1,1,ifc,e),t1y(1,1,ifc,e),t1z(1,1,ifc,e),
-     $                ta1(1,e),ta2(1,e),ta3(1,e),ifc,iop)
+        call copy(vx,jacm1,ntot1)
+
+        call subgeom_setup_dssum()
+
+        call genwz_subp()     ! Reference matrices
+        call genxyz_subp(xm9,ym9,zm9,lx9,ly9,lz9)
+
+        do i=1,ntot9
+          x = xm9(i,1,1,1)
+          y = ym9(i,1,1,1)
+          ym9(i,1,1,1) = ym9(i,1,1,1) + 0.1*cos(om*x) + 0.1*sin(om*y)
+          xm9(i,1,1,1) = xm9(i,1,1,1) + 0.05*sin(om*y) + 0.2*cos(om*x)
         enddo
-!        call fs_int_project(ta1,ta2,ta3)
-        call outpost(ta1,ta2,ta3,pr,ta3,'tst')
+        call geom9_subp()
 
+!        call fgslib_gs_op(subgeom_gs_handle,xm9,1,1,0)  ! 1 ==> +
 
-!!       Broadcast location of the free surface
-!!       At the moment we only need x coord for now      
-!        call copy(ta2,xm1,ntot1)
-!        call col2(ta2,fs_mask,ntot1)
-!        call fgslib_gs_op(fs_gs_handle,ta2,1,1,0)     ! 1 ==> +
-!        call col2(ta2,fs_vmult,ntot1)
-!
-!        ifield = 1
-!        call bcneusc_f3d(ta1,-1)
-!        call outpost(ta1,ta2,ta3,pr,ta3,'tst') 
+        do i=1,ntot9
+          x = sxm9(i,1,1,1)
+          ta1(i,1) = x
+        enddo
+        call copy(ta1,jacm9,ntot9)  
 
-!        call opcopy(wx,wy,wz,vx,vy,vz)
-!        call outpost(wx,wy,wz,pr,t,'wxy')
-!        call fs_mvmesh
-!        call fs_mvmeshn(wx,wy,wz)
-!        call fs_smooth_meshmv(wx,wy,wz)
-!        call outpost(wx,wy,wz,pr,t,'wxy')
+        idir = 1        ! 9 -> 1
+        call map91(vy,ta1,idir)
 
-!        call fs_global_basis
-!        call fs_gllo_flds(wx,wy,wz)
-!        call fs_intp_setup
-!        call fs_get_localpts
-!        call fs_get_globalpts
-!        call fs_restore_int
+        call outpost(vx,vy,vz,pr,t,'tst')
 
-!        call exitt
+        call exitt
       endif  
 
-!      write(6,*) iflmsf(1),iflmse(1),iflmsc(1) 
-
-!      call rzero3(wx,wy,wz,ntot1)
-!      call outpost(tmp1,tmp2,tmp3,pr,tmp3,'tst')
-!      call outpost(wx,wy,wz,pr,wz,'tst')
 
       return
       end subroutine test_random
