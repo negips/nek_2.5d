@@ -32,7 +32,6 @@
 !     Zero out tangential component of mesh velocity
       call fs_mvmeshn2(wx,wy,wz)
 
-
       if (fs_ifgsm) then
 
         call fs_gllo_xyz
@@ -991,15 +990,15 @@
       call zwgll(zx_fs,wx_fs,lxfs)
       call zwgll(zy_fs,wy_fs,lyfs)
    
-      if (ndim.eq.3) then
+!      if (ndim.eq.3) then
         do ix=1,lxfs
         do iy=1,lyfs
           w2_fs(ix,iy) = wx_fs(ix)*wy_fs(iy)
         enddo
         enddo
-      else
-        call copy(w2_fs,wx_fs,lxfs)
-      endif
+!      else
+!        call copy(w2_fs,wx_fs,lxfs)
+!      endif
 
 !     Derivative matrices      
       call dgll (dx_fs,dxt_fs,zx_fs,lxfs,lxfs)
@@ -1054,9 +1053,14 @@
         do ix=1,lxfs
           xg_fs(ix,iy,1)=(zx_fs(ix)+1.0)*(zm1_max-zm1_min)/2.0 + zm1_min
           yg_fs(ix,iy,1)=(zy_fs(iy)+1.0)*(ym1_max-ym1_min)/2.0 + ym1_min
-          if (ndim.eq.2) xg_fs(ix,iy,1) = zx_fs(ix)
+          jac_fs(ix,iy) =(ym1_max-ym1_min)*(zm1_max-zm1_min)/4.0 
+          if (ndim.eq.2) then
+            xg_fs(ix,iy,1) = zx_fs(ix)
+            jac_fs(ix,iy) =(ym1_max-ym1_min)/2.0
+          endif  
         enddo
       enddo
+      call col3(bm_fs,w2_fs,jac_fs,lxfs*lyfs)
 
 !      call fs_global_deriv()
 

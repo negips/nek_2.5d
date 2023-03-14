@@ -1,0 +1,41 @@
+c
+c     GMRES variables
+c
+c     w is a work vector
+c     c and s store the Givens rotations
+c     V stores the orthogonal Krylov subspace basis
+c          -1
+c     Z = M   V
+c
+
+      integer lgmfld                      ! No of fields
+      parameter (lgmfld=2)
+      integer ltgm                        ! total size
+      parameter (ltgm=lxfs*lyfs*lgmfld)
+      integer lgmit                       ! No of gmres iterations
+      parameter (lgmit=30)
+
+      real x_gmres(ltgm), r_gmres(ltgm)
+     $   , w_gmres(ltgm), h_gmres(lgmit,lgmit)
+     $   , wk_gmres(ltgm)
+     $   , gamma_gmres(lgmit+1), c_gmres(lgmit), s_gmres(lgmit)
+      common /fsgmres/ x_gmres, r_gmres, w_gmres, wk_gmres, h_gmres, 
+     $               gamma_gmres, c_gmres, s_gmres
+    
+      real           v_gmres(ltgm,lgmit)
+      common /fsgmre1/ v_gmres
+
+      real           z_gmres(ltgm,lgmit)
+      common /fsgmre2/ z_gmres
+
+      real wghts
+      common /fsgmres_wt/    wghts (ltgm)
+
+      real wk1,wk2
+      common /fsgmres_wk/   wk1(lgmit),wk2(lgmit)
+
+      real y
+      common /fscgmres1_m1/ y(lgmit)
+
+
+

@@ -14,7 +14,8 @@
 !
 !      
 !====================================================================== 
-      subroutine ortho_subspace(r,nt,h,V,ldv,k,wgt,ifwgt,ngs,wk1,wk2)
+      subroutine ortho_subspace(r,nt,h,V,ldv,k,wgt,ifwgt,ngs,wk1,wk2,
+     $                          iflocal)
 
       implicit none
 
@@ -35,6 +36,7 @@
       integer igs,i
 
       real vlsc2,vlsc3        ! Functions
+      logical iflocal
 
 !     Zero projections      
       call rzero(h,k)
@@ -47,8 +49,8 @@
           else
             wk1(i)=vlsc2(r,V(1,i),nt)           ! wk1 = (w,V )
           endif
-        enddo                                             
-        call gop(wk1,wk2,'+  ',k)               ! sum over all procs
+        enddo
+        if (.not.iflocal) call gop(wk1,wk2,'+  ',k)  ! sum over all procs
 
         do i=1,k
           call add2s2(r,V(1,i),-wk1(i),nt)      ! r = r - V*wk1

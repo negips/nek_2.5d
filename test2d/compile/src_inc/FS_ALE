@@ -67,6 +67,8 @@
       real zx_fs(lxfs),wx_fs(lxfs)  ! x GLL and weights
       real zy_fs(lyfs),wy_fs(lyfs)  ! y GLL and weights
       real w2_fs(lxfs,lyfs)         ! 2D weights
+      real jac_fs(lxfs,lyfs)        ! Jacobian
+      real bm_fs(lxfs,lyfs)         ! Mass Matrix (Diagonal)
 
 
 !     Coordinates of the single global element      
@@ -76,7 +78,7 @@
       real fld_fs(lxfs,lyfs,3)
       real lfld_fs(lx1,ly1,lelv,3)
 
-      common /fs_globzw/ zx_fs,wx_fs,zy_fs,wy_fs,w2_fs
+      common /fs_globzw/ zx_fs,wx_fs,zy_fs,wy_fs,w2_fs,jac_fs,bm_fs
       common /fs_globxy/ xg_fs,yg_fs,fld_fs,lfld_fs
 
 !     Original mesh points. This way is not very memory optimal

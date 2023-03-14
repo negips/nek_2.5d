@@ -112,6 +112,9 @@ c-----------------------------------------------------------------------
         call copy(t,vz,ntot1)
       endif  
 
+      call test_constrain()
+      call exitt
+
       call test_random
 
       if (fs_iffs) call fs_mvmesh()
@@ -558,4 +561,100 @@ c-----------------------------------------------------------------------
       return
       end subroutine writew3m2
 !---------------------------------------------------------------------- 
+
+      subroutine test_constrain()
+
+      implicit none
+
+      include 'SIZE'
+      include 'FS_ALE'
+      include 'GEOM'
+      include 'SOLN'
+
+      include 'MVGEOM'
+
+      integer lt
+      parameter (lt=lx1*ly1*lz1*lelt)
+
+      integer i,j,k,e,n
+      real x,y,z
+
+      real tb1,tb2
+      common /scrch/ tb1     (lt)
+     $ ,             tb2     (lt)
+
+      real ta1,ta2,ta3,ta4
+      common /scrmg/ ta1    (lt)
+     $ ,             ta2    (lt)
+     $ ,             ta3    (lt)
+     $ ,             ta4    (lt)
+
+!     Temporary arrays
+      real wk1,wk2,wk3,wk4
+      common /scrns/ wk1(lt*2),
+     $               wk2(lt*2),
+     $               wk3(lt*2),
+     $               wk4(lt) 
+    
+      integer maxiter 
+
+      n = nx1*ny1*nz1*nelv
+
+      do i=1,n
+        x           = xm1(i,1,1,1)
+        y           = ym1(i,1,1,1)
+        wx(i,1,1,1) = cos(y+1)
+        wy(i,1,1,1) = sin(y+1)
+      enddo
+
+
+      call fs_global_basis()
+
+      call fs_gllo_xyz
+
+      call fs_gllo_flds(wx,wy,wz)
+      call fs_intp_setup
+      call fs_get_localpts      
+
+      call rzero(tb1,lxfs*lyfs)
+      call rzero(tb2,lxfs*lyfs)
+
+      do j=1,lyfs
+      do i=1,lxfs
+        tb1(i)=fld_fs(i,j,1)
+      enddo
+      enddo
+!      call copy(tb1,fld_fs,lxfs*lyfs)
+      call col2(tb1,bm_fs,lxfs*lyfs)
+
+      k = 0
+      do j=1,lyfs
+      do i=1,lxfs
+        k = k + 1
+        write(6,'(A5,2x,6(E16.8E2,2x))') 'glpts',xg_fs(i,j,1),
+     $      yg_fs(i,j,1),fld_fs(i,j,1),fld_fs(i,j,2),
+     $      tb1(k),tb2(k)
+      enddo
+      enddo
+
+      maxiter = 500
+      call fs_gmres(tb1,tb2,maxiter)
+
+      call tensory_op(ta1,tb1,lxfs,lyfs,1,dyt_fs,lyfs)
+     
+      k = 0
+      do j=1,lyfs
+      do i=1,lxfs
+        k = k + 1
+        write(6,'(A6,2x,6(E16.8E2,2x))') 'soln1',xg_fs(i,j,1),
+     $      yg_fs(i,j,1),fld_fs(i,j,1),tb1(k),tb2(k),ta1(k)
+      enddo
+      enddo
+
+
+      return
+      end subroutine
+!---------------------------------------------------------------------- 
+
+
 

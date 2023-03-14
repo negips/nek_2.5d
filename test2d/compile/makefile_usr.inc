@@ -36,6 +36,7 @@ $(OBJDIR)/fs_ale.o              :$(SRC_FS)/fs_ale.f;                    $(F77) -
 $(OBJDIR)/fs_sort.o             :$(SRC_FS)/fs_sort.f;                   $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 $(OBJDIR)/fs_sort_mp.o          :$(SRC_FS)/fs_sort_mp.f;                $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 $(OBJDIR)/fs_global_surf.o      :$(SRC_FS)/fs_global_surf.f;            $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
+$(OBJDIR)/fs_global_gmres.o     :$(SRC_FS)/fs_global_gmres.f;           $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 $(OBJDIR)/frame_fs.o            :$(SRC_FS)/frame_fs.f;                  $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 $(OBJDIR)/localfilter.o         :$(SRC_USR)/localfilter.f;              $(F77) -c $(FL2) -I$(SRC_INC)/ $< -o $@
 
