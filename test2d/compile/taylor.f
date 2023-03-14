@@ -576,7 +576,7 @@ c-----------------------------------------------------------------------
       integer lt
       parameter (lt=lx1*ly1*lz1*lelt)
 
-      integer i,j,k,e,n
+      integer i,j,k,e,n,m
       real x,y,z
 
       real tb1,tb2
@@ -597,6 +597,8 @@ c-----------------------------------------------------------------------
      $               wk4(lt) 
     
       integer maxiter 
+      real vlsc2
+      real temp1,temp2
 
       n = nx1*ny1*nz1*nelv
 
@@ -616,28 +618,32 @@ c-----------------------------------------------------------------------
       call fs_intp_setup
       call fs_get_localpts      
 
-      call rzero(tb1,lxfs*lyfs)
-      call rzero(tb2,lxfs*lyfs)
+      m = lxfs*lyfs
 
+      call rzero(tb1,m)
+      call rzero(tb2,m)
+
+      k = 0
       do j=1,lyfs
       do i=1,lxfs
-        tb1(i)=fld_fs(i,j,1)
+        k = k+1
+        tb1(k)=fld_fs(i,j,1)
       enddo
       enddo
-!      call copy(tb1,fld_fs,lxfs*lyfs)
-      call col2(tb1,bm_fs,lxfs*lyfs)
+!      call copy(tb1,fld_fs,m)
+      call col2(tb1,bm_fs,m)
 
       k = 0
       do j=1,lyfs
       do i=1,lxfs
         k = k + 1
         write(6,'(A5,2x,6(E16.8E2,2x))') 'glpts',xg_fs(i,j,1),
-     $      yg_fs(i,j,1),fld_fs(i,j,1),fld_fs(i,j,2),
+     $      yg_fs(i,j,1),fld_fs(i,j,1),bm_fs(i,j),
      $      tb1(k),tb2(k)
       enddo
       enddo
 
-      maxiter = 500
+      maxiter = 1000
       call fs_gmres(tb1,tb2,maxiter)
 
       call tensory_op(ta1,tb1,lxfs,lyfs,1,dyt_fs,lyfs)
@@ -650,6 +656,13 @@ c-----------------------------------------------------------------------
      $      yg_fs(i,j,1),fld_fs(i,j,1),tb1(k),tb2(k),ta1(k)
       enddo
       enddo
+
+      call fs_lagrangian_deriv(ta1,ta2,tb1,tb2,wk1)
+      call subcol3(ta1,fld_fs,bm_fs,m)
+      temp1 = vlsc2(ta1,ta1,m)
+      temp2 = vlsc2(ta2,ta2,m)
+
+      write(6,*) '||Lx-b|| = ', temp1,temp2
 
 
       return

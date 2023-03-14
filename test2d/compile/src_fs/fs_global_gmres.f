@@ -285,7 +285,7 @@ C     Set up diag preconditioner.
       n = lxfs*lyfs
 
 !     Interior lagrange multipliers are zero   
-      do j=2,lyfs
+      do j=2,lyfs-1
       do i=1,lxfs
         r2(i,j) = 0.0
       enddo
@@ -298,13 +298,14 @@ C     Set up diag preconditioner.
 
       call copy(DLr1,r1,n)
       call col2(DLr1,bm_fs,n)
+
       call add2(DLr1,wk,n)
 
 !     Regular gradient operator here      
       call tensory_op(DLr2,r1,lxfs,lyfs,1,dyt_fs,lyfs)
       call col2(DLr2,w2_fs,n)
 !     Interior lagrange multipliers are zero   
-      do j=2,lyfs
+      do j=2,lyfs-1
       do i=1,lxfs
         DLr2(i,j) = 0.0
       enddo
